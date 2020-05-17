@@ -6,17 +6,17 @@
         <img src="../../assets/img/logo_index.png" alt="">
       </div>
     <!-- 放置一个表单 -->
-      <el-form>
-        <el-form-item>
-          <el-input placeholder="请输入手机号"></el-input>
+      <el-form :model='form' :rules="formRules">
+        <el-form-item style="margin-top:20px" prop="iphoneNumber">
+          <el-input placeholder="请输入手机号" v-model="form.iphoneNumber"></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-input placeholder="验证码" style="width:65%"></el-input>
+        <el-form-item prop="code">
+          <el-input placeholder="验证码" style="width:65%" v-model="form.code"></el-input>
           <el-button type="primary" style="float:right">发送验证码</el-button>
         </el-form-item>
         <!-- 复选框 用户协议 -->
-        <el-form-item>
-           <el-checkbox >我已阅读并同意用户协议和隐私条款</el-checkbox>
+        <el-form-item prop="checked">
+           <el-checkbox v-model="form.checked">我已阅读并同意用户协议和隐私条款</el-checkbox>
         </el-form-item>
         <!-- 登陆 -->
         <el-form-item>
@@ -29,7 +29,16 @@
 
 <script>
 export default {
-
+  data () {
+    return {
+      form: {
+        iphoneNumber: '',
+        code: '',
+        checked: true
+      },
+      formRules: {}
+    }
+  }
 }
 </script>
 
