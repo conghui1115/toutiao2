@@ -84,9 +84,17 @@ export default {
 
         })
           .then(result => {
+            // 把获取的接口的token 缓存到本地
             window.localStorage.setItem('user-token', result.data.data.token)
+            this.$router.push('/')
           })
-          .catch(() => {})
+          .catch(() => {
+            this.$message({
+              message: '用户名或者密码错误',
+              type: 'error'
+            })
+            // this.$message.error('用户名或者密码错误')
+          })
       })
     }
   }
