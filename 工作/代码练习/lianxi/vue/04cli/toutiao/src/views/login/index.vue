@@ -8,7 +8,7 @@
     <!-- 放置一个表单 :model绑定表单  rules表单规则-->
       <el-form :model='form' :rules="formRules" ref="form">
         <!-- prop 接收字段属性 -->
-        <el-form-item style="margin-top:20px" prop="iphoneNumber">
+        <el-form-item style="margin-top:20px" prop="mobile">
           <!-- v-model 双向绑定数据 -->
           <el-input placeholder="请输入手机号" v-model="form.mobile"></el-input>
         </el-form-item>
@@ -41,10 +41,10 @@ export default {
       },
       // 自动校验规则
       formRules: {
-        iphoneNmber: [
+        mobile: [
           // required 验证 空 null  undefine 不能验证 false 或者 true,
-          { required: true, message: '手机号不能为空', trigger: 'blur' },
-          { pattern: /^1(3|4|5|6|7|8|9)\d{9}$/, message: '手机号码不正确', trigger: 'blur' }
+          { required: true, message: '手机号不能为空' },
+          { pattern: /^1(3|4|5|6|7|8|9)\d{9}$/, message: '手机号码不正确' }
         ],
         code: [
           { required: true, message: '验证码不为空', trigger: 'blur' },
@@ -53,7 +53,7 @@ export default {
         checked: [
           // 自定义校验
           {
-            validator: function (rules, value, callback) {
+            validator: function (rule, value, callback) {
               value ? callback() : callback(new Error('请选择协议'))
             }
           }

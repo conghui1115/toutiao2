@@ -1,17 +1,26 @@
 <template>
-  <div class="home">
-    <h1>我是首页</h1>
-  </div>
+  <el-container>
+    <el-aside>
+     <layout-aside></layout-aside>
+    </el-aside>
+    <el-container>
+      <el-header>头部</el-header>
+      <el-main>
+        <h1>内容</h1>
+        <router-view></router-view>
+      </el-main>
+    </el-container>
+  </el-container>
 </template>
 
 <script>
 // @ is an alias to /src
 // import HelloWorld from '@/components/HelloWorld.vue'
-
+import Aside from '@/components/home/layout-aside'
 export default {
-  name: 'Home',
   components: {
-    // HelloWorld
+    'layout-aside': Aside
   }
+
 }
 </script>
