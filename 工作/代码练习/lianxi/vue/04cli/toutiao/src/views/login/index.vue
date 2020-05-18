@@ -10,7 +10,7 @@
         <!-- prop 接收字段属性 -->
         <el-form-item style="margin-top:20px" prop="iphoneNumber">
           <!-- v-model 双向绑定数据 -->
-          <el-input placeholder="请输入手机号" v-model="form.iphoneNumber"></el-input>
+          <el-input placeholder="请输入手机号" v-model="form.mobile"></el-input>
         </el-form-item>
         <el-form-item prop="code">
           <el-input placeholder="验证码" style="width:65%" v-model="form.code"></el-input>
@@ -35,13 +35,13 @@ export default {
     return {
       form: {
         // 字段
-        iphoneNumber: '',
+        mobile: '',
         code: '',
         checked: false
       },
       // 自动校验规则
       formRules: {
-        iphoneNumber: [
+        iphoneNmber: [
           // required 验证 空 null  undefine 不能验证 false 或者 true,
           { required: true, message: '手机号不能为空', trigger: 'blur' },
           { pattern: /^1(3|4|5|6|7|8|9)\d{9}$/, message: '手机号码不正确', trigger: 'blur' }
@@ -77,7 +77,16 @@ export default {
       // })
       this.$refs.form.validate().then(() => {
         // 如果成功通过 校验就会到达 then
-        alert(123)
+        this.$axios({
+          url: '/authorizations', // 请求接口地址
+          method: 'post', // 请求方法
+          data: this.form // body请求体参数，获取的是双向数据绑定的手机号和验证码
+
+        })
+          .then(result => {
+            window.localStorage.setItem('user-token', result.data.data.token)
+          })
+          .catch(() => {})
       })
     }
   }
