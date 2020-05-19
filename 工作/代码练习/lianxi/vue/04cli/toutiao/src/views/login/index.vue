@@ -85,7 +85,7 @@ export default {
         })
           .then(result => {
             // 把获取的接口的token 缓存到本地
-            window.localStorage.setItem('user-token', result.data.data.token)
+            window.localStorage.setItem('user-token', result.data.token)
             this.$router.push('/')
           })
           .catch(() => {

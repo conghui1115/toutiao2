@@ -60,7 +60,7 @@ export default {
     })
       .then(result => {
         // 获取结果赋值给data对象
-        this.userInfo = result.data.data
+        this.userInfo = result.data
       })
   }
 }
