@@ -48,14 +48,15 @@ export default {
   },
   created () {
     // 获取用户资料 需要登录是带的token
-    const token = window.localStorage.getItem('user-token')
+    // const token = window.localStorage.getItem('user-token')
     this.$axios({
       url: '/user/profile',
-      method: 'get',
+      method: 'get'
       // 带上头部信息
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      // until里面设置了
+      // headers: {
+      //   Authorization: `Bearer ${token}`
+      // }
     })
       .then(result => {
         // 获取结果赋值给data对象
