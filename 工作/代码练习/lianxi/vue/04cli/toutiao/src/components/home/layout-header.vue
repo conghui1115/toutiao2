@@ -7,16 +7,17 @@
     <!-- 右侧 -->
     <el-col :span="12" class="right">
       <el-row justify="end" type="flex" align="middle">
-        <img src="http://img3.imgtn.bdimg.com/it/u=466636099,2440212896&fm=11&gp=0.jpg" alt="">
+        <img :src="userInfo.photo" alt="">
         <!-- 下拉菜单 -->
-        <el-dropdown>
-          <span>默认名<i class="el-icon-arrow-down el-icon--right"></i></span>
+        <!-- @command跳转 -->
+        <el-dropdown trigger="click" @command="clickMenu">
+          <span>{{userInfo.name}}<i class="el-icon-arrow-down el-icon--right"></i></span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>个人信息</el-dropdown-item>
-            <el-dropdown-item>git地址</el-dropdown-item>
-            <el-dropdown-item>退出</el-dropdown-item>
+            <!-- command 属性 -->
+            <el-dropdown-item command='info'>个人信息</el-dropdown-item>
+            <el-dropdown-item command='git'>git地址</el-dropdown-item>
+            <el-dropdown-item command='logout'>退出</el-dropdown-item>
           </el-dropdown-menu>
-
         </el-dropdown>
       </el-row>
     </el-col>
@@ -25,7 +26,42 @@
 
 <script>
 export default {
+  data () {
+    return {
+      userInfo: {}// 用户个人信息
+    }
+  },
+  methods: {
+    // 点击头部下拉菜单的事件 特别是退出
+    clickMenu (command) {
+      if (command === 'info') {
 
+      } else if (command === 'git') {
+        window.location.href = 'https://github.com/conghui1115/toutiao'
+      } else {
+        // 点击退出，一个是删除token 2，去login页面,
+        // 但是不是彻底的退出，需要导航守卫
+        window.localStorage.removeItem('user-token')
+        this.$router.push('/login')
+      }
+    }
+  },
+  created () {
+    // 获取用户资料 需要登录是带的token
+    const token = window.localStorage.getItem('user-token')
+    this.$axios({
+      url: '/user/profile',
+      method: 'get',
+      // 带上头部信息
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(result => {
+        // 获取结果赋值给data对象
+        this.userInfo = result.data.data
+      })
+  }
 }
 </script>
 

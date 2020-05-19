@@ -18,13 +18,13 @@
 <script>
 // @ is an alias to /src
 // import HelloWorld from '@/components/HelloWorld.vue'
-import Aside from '@/components/home/layout-aside'
-import layoutHeader from '@/components/home/layout-header'
+// import Aside from '@/components/home/layout-aside'
+// import layoutHeader from '@/components/home/layout-header'
 export default {
-  components: {
-    'layout-aside': Aside,
-    'layout-header': layoutHeader
-  }
+  // components: {
+  //   'layout-aside': Aside,
+  //   'layout-header': layoutHeader
+  // }
 
 }
 </script>
