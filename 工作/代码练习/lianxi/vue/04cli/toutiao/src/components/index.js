@@ -2,9 +2,11 @@
 // Vue.use()会调用对象中的install 方法的第一个参数   是Vue对象
 import Aside from '@/components/home/layout-aside'
 import layoutHeader from '@/components/home/layout-header'
+import BreadCrumb from '@/components/common/bread-crumb'
 export default {
   install: function (Vue) {
     Vue.component('layout-aside', Aside)
     Vue.component('layout-header', layoutHeader)
+    Vue.component('bread-crumb', BreadCrumb)
   }
 }

@@ -20,6 +20,10 @@ const routes = [
       {
         path: '',
         component: Second
+      },
+      {
+        path: 'comment',
+        component: () => import('@/views/comment')// 按需加载页面
       }
     ]
   },

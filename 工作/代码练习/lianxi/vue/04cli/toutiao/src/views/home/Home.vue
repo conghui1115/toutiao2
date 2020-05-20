@@ -8,7 +8,6 @@
         <layout-header></layout-header>
       </el-header>
       <el-main>
-        <h1>内容</h1>
         <router-view></router-view>
       </el-main>
     </el-container>
