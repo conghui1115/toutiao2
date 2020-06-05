@@ -7,19 +7,19 @@
         <img src="../../assets/img/logo_index.png" alt="">
       </div>
       <!-- 放置表单 -->
-      <el-form>
+      <el-form v-bind:model="loginForm" :rules="loginRules">
         <!-- 表单域 里面   放置 input/select/checkbox 相当于一行-->
-        <el-form-item>
-           <el-input placeholder="请输入手机号"></el-input>
+        <el-form-item prop="mobile">
+           <el-input placeholder="请输入手机号" v-model="loginForm.mobile"></el-input>
         </el-form-item>
         <!-- 表单域 -->
-        <el-form-item>
-          <el-input style="width:65%" placeholder="验证码"></el-input>
+        <el-form-item prop="code">
+          <el-input style="width:65%" placeholder="验证码" v-model="loginForm.code"></el-input>
             <el-button style="float:right" plain>发送验证码</el-button>
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="checked">
           <!-- 复选框 -->
-          <el-checkbox v-model="checked">我已阅读并同意用户协议和隐私条款</el-checkbox>
+          <el-checkbox  v-model="loginForm.checked">我已阅读并同意用户协议和隐私条款</el-checkbox>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" style="width:100%">登录</el-button>
@@ -31,7 +31,19 @@
 
 <script>
 export default {
+  data () {
+    return {
+      loginForm: {
+      // 登录表单数据
+        mobile: '',
+        code: '',
+        checked: false
+      },
+      loginRules: {
 
+      }
+    }
+  }
 }
 </script>
 
