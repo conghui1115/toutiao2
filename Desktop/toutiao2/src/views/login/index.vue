@@ -7,7 +7,7 @@
         <img src="../../assets/img/logo_index.png" alt="">
       </div>
       <!-- 放置表单 -->
-      <el-form v-bind:model="loginForm" :rules="loginRules">
+      <el-form v-bind:model="loginForm" :rules="loginRules" ref="loginForm">
         <!-- 表单域 里面   放置 input/select/checkbox 相当于一行-->
         <el-form-item prop="mobile">
            <el-input placeholder="请输入手机号" v-model="loginForm.mobile"></el-input>
@@ -22,7 +22,7 @@
           <el-checkbox  v-model="loginForm.checked">我已阅读并同意用户协议和隐私条款</el-checkbox>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" style="width:100%">登录</el-button>
+          <el-button type="primary" style="width:100%" @click="login">登录</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -40,8 +40,53 @@ export default {
         checked: false
       },
       loginRules: {
-
+        mobile: [
+          { required: true, message: '手机号码不能为空' },
+          { pattern: /^1[3-9]\d{9}$/, message: '手机号码格式不正确' }
+        ],
+        code: [
+          { required: true, message: '验证码不能为空' },
+          { pattern: /^\d{6}$/, message: '输入6位数字验证码' }
+        ],
+        checked: [
+          {
+            validator: function (rules, value, callback) {
+              value ? callback() : callback(new Error('必须同意条款'))
+            }
+          }
+        ]
       }
+    }
+  },
+  methods: {
+    // 点击登录自动校验
+    login () {
+      // 第一种
+      // this.$refs.loginForm.validate(function (isOk) {
+      //   if (isOk) {
+      //     console.log('校验通过')
+      //   } else {
+      //     console.log('校验不通过')
+      //   }
+      // })
+      // 通过校验后，应该做的事情，=》调用接口  看看手机号是否正常
+      this.$refs.loginForm.validate().then(() => {
+        // 写法
+        // this.$axios.get/post/put/delete("")
+        this.$axios({
+          url: '/authorizations',
+          method: 'post',
+          data: this.loginForm
+        }).then(result => {
+          // 拿到后台的token 钥匙 ，存在本地
+          window.localStorage.setItem('user-token', result.data.data.token)
+          // 验证完跳转首页
+          this.$router.push('/home')
+        }).catch(() => {
+          // 如果填写不正确，则弹出提示信息
+          this.$message({ message: '用户名或者密码错误', type: 'error' })
+        })
+      })
     }
   }
 }
