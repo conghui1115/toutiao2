@@ -1,16 +1,28 @@
 <template>
   <el-container>
-    <el-aside><h1>左侧导航</h1></el-aside>
+    <el-aside style="width:230px">
+    <home-aside></home-aside>
+    </el-aside>
     <el-container>
-      <el-header>我是头部</el-header>
-      <el-main><ruter-view/></el-main>
+      <el-header>
+       <home-header></home-header>
+      </el-header>
+      <el-main>
+        <router-view></router-view>
+        </el-main>
     </el-container>
   </el-container>
 </template>
 
 <script>
-export default {
+// import Aside from '../../components/home/aside'
+// import Header from '../../components/home/header'
 
+export default {
+  // components: {
+  //   'home-aside': Aside,
+  //   'home-header': Header
+  // }
 }
 </script>
 
