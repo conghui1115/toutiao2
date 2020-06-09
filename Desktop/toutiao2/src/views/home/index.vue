@@ -9,7 +9,7 @@
       </el-header>
       <el-main style="padding:0">
         <router-view></router-view>
-        </el-main>
+      </el-main>
     </el-container>
   </el-container>
 </template>

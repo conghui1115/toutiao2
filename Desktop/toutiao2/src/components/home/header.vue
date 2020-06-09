@@ -56,15 +56,15 @@ export default {
     }
   },
   created () {
-    const token = window.localStorage.getItem('user-token')
+    // const token = window.localStorage.getItem('user-token')
     this.$axios({
-      url: '/user/profile',
-      headers: {
-        Authorization: `Bearer ${token}` // 格式要求 Bearer +token
-      }
+      url: '/user/profile'
+      // headers: {
+      //   Authorization: `Bearer ${token}` // 格式要求 Bearer +token
+      // }
     }).then(result => {
       // 如果加载成功
-      this.userInfo = result.data.data
+      this.userInfo = result.data// 拦截返回设置
     })
   }
 }
