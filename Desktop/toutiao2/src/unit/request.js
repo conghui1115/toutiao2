@@ -5,7 +5,12 @@
 */
 import axios from 'axios'
 import router from '../router'
+import JSONBig from 'json-bigint'
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0'
+// 解决data响应回来的字符串
+axios.defaults.transformResponse = [function (data) {
+  return data ? JSONBig.parse(data) : {} // 解决js 处理大数字失真问题
+}]
 //  拦截器
 axios.interceptors.request.use(function (config) {
   // 成功时执行， 第一个参数 会有一个 config config就是所有的axios 的请求信息

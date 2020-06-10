@@ -65,7 +65,7 @@ export default {
           method: 'put', // 请求类型
           // query参数
           params: {
-            article_id: row.id // 要求参数的文章id
+            article_id: row.id.toString() // id位数太多超过安全数字，报错 要求参数的文章id 使用大数字类型  axios那里处理
           },
           data: {
             //  body参数
