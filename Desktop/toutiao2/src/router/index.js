@@ -28,8 +28,8 @@ const routes = [
         component: () => import('@/views/comment')
       },
       {
-        path: 'meterial',
-        component: () => import('@/views/meterial')
+        path: 'material',
+        component: () => import('@/views/material')
       }
     ]
   },
