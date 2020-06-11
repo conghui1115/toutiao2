@@ -1,5 +1,5 @@
 <template>
-  <el-card>
+  <el-card v-loading="loading">
     <!-- 面包屑导航 -->
     <bread-crumb slot="header">
       <template slot="title">评论管理</template>
@@ -20,6 +20,19 @@
         </template>
       </el-table-column>
     </el-table>
+    <!-- 分页器 -->
+     <el-row type="flex" justify="center" align="middle" style="height:80px">
+       <el-pagination
+       background
+       layout="prev,pager,next"
+       :total="page.total"
+       :current-page="page.currentPage"
+       :page-size="page.pageSize"
+       @current-change="currentChange"
+       >
+
+       </el-pagination>
+     </el-row>
   </el-card>
 </template>
 
@@ -27,22 +40,44 @@
 export default {
   data () {
     return {
-      list: []
+      list: [],
+      page: {
+        total: 0, // 默认是0
+        currentPage: 1,
+        pageSize: 10 // 默认是10
+
+      },
+      loading: false
     }
   },
   methods: {
+    // 分页逻辑
+    currentChange (newPage) {
+      // newPage为最新的求换页码
+      this.page.currentPage = newPage// 赋值最新页码
+      // 重新拉取数据
+      this.getComment() // 获取评论
+    },
     getComment () {
+      // 设置加载遮罩层
+      this.loading = true
       this.$axios({
         url: '/articles',
         // query 参数用该在哪个位置传 axios
         // params 传get参数也是query参数
         // data 传body 参数也即是请求体参数
         params: {
-          response_type: 'comment'
+          response_type: 'comment',
+          page: this.page.currentPage, // 查对应页码
+          per_page: this.page.pageSize// 查10条
         }
       }).then(result => {
         // console.log(result)
         this.list = result.data.results
+        // 获取完数据 之后 将总值赋值给total
+        this.page.total = result.data.total_count// 将总值赋值
+        // 请求完毕  关闭遮罩
+        this.loading = false
       })
     },
     // 评论状态修改， true false不显示  需要fatmatter属性 格式化代码
@@ -82,6 +117,7 @@ export default {
         })
       })
     }
+
   },
   created () {
     this.getComment()
