@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '@/views/home'
 import Login from '@/views/login'
 import SecondeHome from '@/views/home/secondeHome'
+// import Meterial from '@/views/meterial'
 
 Vue.use(VueRouter)
 
@@ -25,6 +26,10 @@ const routes = [
       {
         path: 'comment',
         component: () => import('@/views/comment')
+      },
+      {
+        path: 'meterial',
+        component: () => import('@/views/meterial')
       }
     ]
   },
