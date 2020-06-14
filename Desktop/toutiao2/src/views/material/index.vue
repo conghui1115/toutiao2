@@ -63,11 +63,15 @@ export default {
         url: '/user/images',
         params: {
           // 动态传入
-          collect: this.activeName === 'collect'
+          collect: this.activeName === 'collect',
+          page: this.page.currentPage, // 页码变量
+          per_page: this.page.pageSize
         },
         data: {}
       }).then(result => {
         this.list = result.data.results
+        // 赋值总条数
+        this.page.total = result.data.total_count // 全部与收藏
       })
     },
     changeTab () {
