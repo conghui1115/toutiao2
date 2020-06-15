@@ -15,9 +15,9 @@
       <!-- 全部素材 -->
       <el-tab-pane label="全部素材" name="all" >
         <div class="img-list">
-          <el-card class="img-card" v-for="item in list" :key="item.id">
+          <el-card class="img-card" v-for="(item,index) in list" :key="item.id" >
               <!-- 放置图片 -->
-              <img :src="item.url" alt="">
+              <img :src="item.url" alt="" @click="selectImg(index)">
               <!-- 操作栏 -->
               <el-row class="operate" type="flex" justify="space-around" align="middle">
                 <i class='el-icon-star-on' @click="collect(item)" :style="{color:item.is_collected? 'red':'black'}"></i>
@@ -29,9 +29,9 @@
       <!-- 收藏素材 -->
      <el-tab-pane label="收藏素材" name="collect">
         <div class="img-list">
-          <el-card class="img-card" v-for="item in list" :key="item.id">
+          <el-card class="img-card" v-for="(item,index) in list" :key="item.id">
               <!-- 放置图片 -->
-              <img :src="item.url" alt="">
+              <img :src="item.url" alt=""  @click="selectImg(index)">
           </el-card>
         </div>
       </el-tab-pane>
@@ -47,6 +47,16 @@
         <!-- total page-size  current-page-->
       </el-pagination>
     </el-row>
+    <!-- 走马灯预览效果 -->
+    <el-dialog :visible="dialogVisible" @close="dialogVisible = false" @opened="openEnd">
+    <el-carousel indicator-position="outside" height="400px" ref="myCarousel">
+      <!-- 放置幻灯片循环 -->
+      <el-carousel-item v-for="item in list" :key=item.id>
+        <img :src="item.url" alt="" style="width:100%;height:100%">
+      </el-carousel-item>
+    </el-carousel>
+
+    </el-dialog>
   </el-card>
 </template>
 
@@ -60,10 +70,21 @@ export default {
         currentPage: 1, // 默认第一条
         pageSize: 10, // 每页多少条
         total: 1000
-      }
+      },
+      dialogVisible: false, // 控制显示或隐藏 dialog
+      clickIndex: -1
     }
   },
   methods: {
+    // 点击图片时，记录索引
+    selectImg (index) {
+      this.clickIndex = index
+      this.dialogVisible = true
+    },
+    // dialog是懒加载，解决ref实例第一次找不到，打开动画结束时的回调
+    openEnd () {
+      this.$refs.myCarousel.setActiveItem(this.clickIndex)
+    },
     // 收藏素材按钮//哪一个数据,传入id
     collect (row) {
       this.$axios({
