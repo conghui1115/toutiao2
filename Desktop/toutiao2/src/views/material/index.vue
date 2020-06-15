@@ -3,6 +3,13 @@
     <bread-crumb slot="header">
       <template slot="title">素材管理</template>
     </bread-crumb>
+    <!-- 上传素材 -->
+    <el-row type="flex" justify="end">
+      <!-- action 是必须传入的，不然报错 -->
+      <el-upload action="" :http-request="uploadImg">
+        <el-button size="small" type="primary">点击上传</el-button>
+      </el-upload>
+    </el-row>
     <!-- 素材 -->
     <el-tabs v-model="activeName" @tab-click="changeTab">
       <!-- 全部素材 -->
@@ -13,8 +20,8 @@
               <img :src="item.url" alt="">
               <!-- 操作栏 -->
               <el-row class="operate" type="flex" justify="space-around" align="middle">
-                <i class='el-icon-star-on'></i>
-                <i class='el-icon-delete-solid'></i>
+                <i class='el-icon-star-on' @click="collect(item)" :style="{color:item.is_collected? 'red':'black'}"></i>
+                <i class='el-icon-delete-solid' @click="deleteMetarial(item)"></i>
               </el-row>
           </el-card>
         </div>
@@ -57,6 +64,21 @@ export default {
     }
   },
   methods: {
+    // 收藏素材按钮//哪一个数据,传入id
+    collect (row) {
+      this.$axios({
+        url: `/user/images/${row.id}`,
+        method: 'put',
+        data: {
+          collect: !row.is_collected
+        }
+      }).then(() => {
+        // 成功重新拉取数据
+        this.getMaterial()
+      }).catch(() => {
+        this.$message.error('操作失败')
+      })
+    },
     // 获取素材
     getMaterial () {
       this.$axios({
@@ -65,7 +87,7 @@ export default {
           // 动态传入
           collect: this.activeName === 'collect',
           page: this.page.currentPage, // 页码变量
-          per_page: this.page.pageSize
+          per_page: this.page.pageSize // 每页数量
         },
         data: {}
       }).then(result => {
@@ -77,6 +99,23 @@ export default {
     changeTab () {
       // 根据当前的activeName决定获取那个方面
       this.getMaterial()
+    },
+    // 上传图片
+    uploadImg (params) {
+      // debugger
+      const data = new FormData() // 实例化
+      data.append('image', params.file) // 添加上传文件的参数
+      // 开始发送请求
+      this.$axios({
+        url: '/user/images',
+        method: 'post',
+        data
+      }).then(() => {
+        // 成功，重新拉取数据
+        this.getMaterial()
+      }).catch(() => {
+        this.$message.error('上传素材失败')
+      })
     }
   },
   created () {
