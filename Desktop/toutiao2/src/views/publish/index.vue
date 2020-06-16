@@ -30,8 +30,8 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="publish">发表</el-button>
-        <el-button>存入草稿</el-button>
+        <el-button type="primary" @click="publish(false)">发表</el-button>
+        <el-button @click="publish(true)">存入草稿</el-button>
       </el-form-item>
     </el-form>
   </el-card>
@@ -73,8 +73,25 @@ export default {
         this.channels = result.data.channels // 将频道数据赋值给本地数据
       })
     },
-    publish () {
-      this.$refs.myForm.validate()
+    // 手动校验表单
+    // 需要this.$ref获取form实例，调用validate()方法
+    publish (params) {
+      this.$refs.myForm.validate().then(() => {
+        this.$axios({
+          url: '/articles',
+          method: 'post',
+          params: {
+            draft: params
+          },
+          data: this.publishForm
+        }).then(() => {
+          // 发表文章成功
+          this.$message.success('发布成功')
+          this.$router.push('/home/articles')
+        }).catch(() => {
+          this.$message.error('发布失败')
+        })
+      })
     }
   },
   created () {

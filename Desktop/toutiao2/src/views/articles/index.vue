@@ -53,8 +53,8 @@
         </div>
         <!-- 右侧 -->
         <div class="right">
-          <span>
-            <i class="el-icon-edit"></i> 修改
+          <span @click="$router.push(`/home/publish/${item.id.toString()}`)">
+            <i class="el-icon-edit" ></i> 修改
           </span>
           <span @click ="deleMetails(item.id)">
             <i class="el-icon-delete"></i> 删除
