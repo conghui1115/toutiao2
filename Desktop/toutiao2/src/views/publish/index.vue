@@ -10,7 +10,7 @@
       </el-form-item>
       <el-form-item label="内容" prop="content">
         <!-- 多行输入 -->
-        <el-input v-model="publishForm.content" placeholder="请输入您的内容" type="textarea" :rows="4"></el-input>
+        <quill-editor v-model="publishForm.content" placeholder="请输入您的内容" type="textarea" :rows="4" style="height:300px"></quill-editor>
       </el-form-item>
       <el-form-item label="封面" prop="cover">
         <!-- 单选框组 -->
@@ -65,6 +65,14 @@ export default {
     }
   },
   methods: {
+    // 根据id修改文章
+    getArticleById (id) {
+      this.$axios({
+        url: `/articles/${id}`
+      }).then(result => {
+        this.publishForm = result.data
+      })
+    },
     // 获取频道列表
     getChannels () {
       this.$axios({
@@ -77,9 +85,12 @@ export default {
     // 需要this.$ref获取form实例，调用validate()方法
     publish (params) {
       this.$refs.myForm.validate().then(() => {
+        const { articleId } = this.$route.params
         this.$axios({
-          url: '/articles',
-          method: 'post',
+          // 根据id是否存在，两个场景，id存在就是修改文章，id不存在就是发表文章
+          url: articleId ? `/articles/${articleId}` : '/articles',
+          // 修改文章方法不同
+          method: articleId ? 'put' : 'post',
           params: {
             draft: params
           },
@@ -96,6 +107,12 @@ export default {
   },
   created () {
     this.getChannels()
+    const { articleId } = this.$route.params
+    // if (articleId) {
+    //   this.getArticleById(articleId)
+    // }
+
+    articleId && this.getArticleById(articleId)
   }
 }
 </script>
