@@ -8,6 +8,7 @@
     <el-form style="padding-left:50px">
       <el-form-item label="文章状态:">
         <!-- 放置单选框组 -->
+        <!-- <el-radio-group v-model="searchForm.status " @change="changeCondition"> -->
         <el-radio-group v-model="searchForm.status ">
           <!-- 单选框按钮 -->
           <!-- 文章状态，0-草稿，1-待审核，2-审核通过，3-审核失败，不传为全部 / 先将 5 定义成 全部 -->
@@ -18,14 +19,18 @@
           <el-radio :label="3">审核失败</el-radio>
         </el-radio-group>
       </el-form-item>
+      <!-- 频道类型 -->
       <el-form-item label="频道类型">
-        <el-select placeholder="请选择频道" v-model="searchForm.channel_id">
+        <!-- <el-select placeholder="请选择频道" v-model="searchForm.channel_id" @change="changeCondition"> -->
+
+          <!-- watch监视数据的改变 -->
+          <el-select placeholder="请选择频道" v-model="searchForm.channel_id" >
           <el-option v-for="item in channels" :value="item.id" :key="item.id" :label="item.name"></el-option>
         </el-select>
       </el-form-item>
-
       <el-form-item label="日期范围">
-        <el-date-picker type="daterange" v-model="searchForm.dateRange"></el-date-picker>
+        <!-- <el-date-picker type="daterange" v-model="searchForm.dateRange" @change="changeCondition" value-format="yyyy-MM-dd"></el-date-picker> -->
+        <el-date-picker type="daterange" v-model="searchForm.dateRange"  value-format="yyyy-MM-dd"></el-date-picker>
       </el-form-item>
     </el-form>
     <!--列表内容 -->
@@ -42,7 +47,7 @@
             <span>{{item.title}}</span>
             <!-- 文章状态，0-草稿，1-待审核，2-审核通过，3-审核失败，不传为全部 / 先将 5 定义成 全部 -->
             <!-- 知识改变显示格式 可以使用过滤器 -->
-            <el-tag class="tag" v-bind:type=" item.stutas| filterType">{{item.status | filtersSatus}}</el-tag>
+            <el-tag class="tag" :type=" item.status| filterType">{{item.status | filtersSatus}}</el-tag>
             <span class="date">{{item.pubdate}}</span>
           </div>
         </div>
@@ -65,7 +70,7 @@ export default {
   data () {
     return {
       searchForm: {
-        status: '5', // 默认是全部状态
+        status: 5, // 默认是全部状态
         channel_id: null, //
         dateRange: [] // 日期范围
       },
@@ -75,6 +80,19 @@ export default {
     }
   },
   methods: {
+    // 搜索条件 方法一
+    changeCondition () {
+      // 应该请求传入的参数
+      const params = {
+        // 文章状态，0-草稿，1-待审核，2-审核通过，3-审核失败，4-已删除，不传为全部
+        status: this.searchForm.status === 5 ? null : this.searchForm.status,
+        channel_id: this.searchForm.channel_id,
+        begin_pubdate: this.searchForm.dateRange && this.searchForm.dateRange.length > 1 ? this.searchForm.dateRange[0] : null,
+        end_pubdate: this.searchForm.dateRange && this.searchForm.dateRange.length > 1 ? this.searchForm.dateRange[1] : null
+      }
+      // 直接调取方法
+      this.getArticles(params)
+    },
     // 获取频道
     getChannels () {
       this.$axios({
@@ -84,14 +102,25 @@ export default {
       })
     },
     // 获取文章列表
-    getArticles () {
+    getArticles (params) {
       this.$axios({
-        url: '/articles'
+        url: '/articles',
+        // params搜索的时候需要用，获取文章列表不用
+        params
       }).then(result => {
         this.list = result.data.results
       })
     }
 
+  },
+  // // 搜索条件 方法二
+  watch: {
+    searchForm: {
+      deep: true,
+      handler () {
+        this.changeCondition()
+      }
+    }
   },
   filters: {
     // 文章状态
