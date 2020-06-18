@@ -123,7 +123,7 @@ export default {
     },
     // 上传图片
     uploadImg (params) {
-      // debugger
+      //
       const data = new FormData() // 实例化
       data.append('image', params.file) // 添加上传文件的参数
       // 开始发送请求

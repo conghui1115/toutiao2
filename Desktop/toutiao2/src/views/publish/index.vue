@@ -8,19 +8,21 @@
       <el-form-item label="标题" prop="title">
         <el-input v-model="publishForm.title" placeholder="请输入标题" style="width:60%"></el-input>
       </el-form-item>
-      <el-form-item label="内容" prop="content">
+      <el-form-item label="内容" prop="content" style="height:400px">
         <!-- 多行输入 -->
-        <quill-editor v-model="publishForm.content" placeholder="请输入您的内容" type="textarea" :rows="4" style="height:300px"></quill-editor>
+        <quill-editor v-model="publishForm.content" placeholder="请输入您的内容" type="textarea" style="height:300px"></quill-editor>
       </el-form-item>
-      <el-form-item label="封面" prop="cover">
+      <el-form-item label="封面" prop="cover" >
         <!-- 单选框组 -->
-        <el-radio-group v-model="publishForm.cover.type">
+        <el-radio-group v-model="publishForm.cover.type" @change="changeType">
           <el-radio :label="1">单图</el-radio>
           <el-radio :label="3">多图</el-radio>
           <el-radio :label="0">无图</el-radio>
           <el-radio :label="-1">自动</el-radio>
         </el-radio-group>
       </el-form-item>
+      <!-- 图片选择组件 -->
+      <cover-image :list="publishForm.cover.images" @selectTwoImg='receiveImg'></cover-image>
       <el-form-item label="频道"  prop="channel_id">
         <!-- select选择器 -->
         <el-select placeholder="请选择频道" v-model="publishForm.channel_id">
@@ -103,7 +105,27 @@ export default {
           this.$message.error('发布失败')
         })
       })
+    },
+    // 封面选择 type 类型
+    changeType () {
+      // 根据type的值  对 images进行控制
+      if (this.publishForm.cover.type === 1) {
+        // 单图模式
+        this.publishForm.cover.images = ['']
+      } else if (this.publishForm.cover.type === 3) {
+        // 多图模式
+        this.publishForm.cover.images = ['', '', '']
+      } else {
+        // 无图或者自动 空数组
+        this.publishForm.cover.images = []
+      }
+    },
+    // 接收cover-image 传递过来的数据
+    receiveImg (url, index) {
+      this.publishForm.cover.images.splice(index, 1, url) // 索引 要删除的个数 替换的位置
+      // this.publishForm.cover.images[index] = url  自己想的一样的效果
     }
+
   },
   created () {
     this.getChannels()
@@ -113,6 +135,28 @@ export default {
     // }
 
     articleId && this.getArticleById(articleId)
+  },
+  watch: {
+    $route: function (to, from) {
+      // to 表示去的路由地址对象
+      // from 表示旧的路由地址对象
+      if (to.params.articleId) {
+        // 如果路由地址带参数,获取文章数据
+        this.getArticleById(to.params.articleId)
+      } else {
+        // 如果不存在 应该设置表结构为空
+        this.publishForm = {
+          title: '', // 文章标题
+          content: '', // 文章内容
+          cover: {
+            type: 0, // -1 是自动 0是无图  1 是单图 3 是三图
+            images: []// 字符串数组 对应type  假如 type 为1 images中应该有一个值 假如为3 images应该有三个值 0 images为空
+          },
+          channel_id: null
+
+        }
+      }
+    }
   }
 }
 </script>
