@@ -21,7 +21,9 @@
          <el-button type='primary' @click="saveUser">保存</el-button>
        </el-form-item>
     </el-form>
-    <img class='head-upload' src="../../assets/img/admire.png" alt="">
+    <el-upload action="">
+          <img class='head-upload' src="../../assets/img/admire.png" alt="">
+    </el-upload>
   </el-card>
 </template>
 
@@ -71,6 +73,21 @@ export default {
         }).catch(() => {
           this.$message.error('保存失败')
         })
+      })
+    },
+    // 上传头像图片
+    uploadImg (params) {
+      const data = new FormData()
+      data.append('photo', params.file) // params.file就是你选中的文件
+      this.$axios({
+        url: '/photo',
+        method: 'patch',
+        data // 要传的文件参数
+      }).then(result => {
+        // 拿到头像地址要把新地址赋值给当前地址
+        // 但是人头部组件的地址咩有更新
+        // 处理菲关系型的组件之间的传值  eventBus  /vuex 来解决
+        this.formData.photo = result.data.photo
       })
     }
   },
